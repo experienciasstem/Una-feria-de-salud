@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>¿Qué nos dicen las canciones?</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden !important;
+  font-family: 'Archivo', Arial, sans-serif;
+}
+body {
+  display: flex !important;
+  flex-direction: column !important;
+  background: #F0EFE9 !important;
+}
+html, body, div, span, p, h1, h2, h3, strong, em, a, button, label {
+  color: inherit !important;
+}
+
+/* ── 2×2 GRID ── */
+.cards-grid {
+  flex: 1 !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  grid-template-rows: 1fr 1fr !important;
+  gap: 10px !important;
+  padding: 10px !important;
+  min-height: 0 !important;
+}
+
+/* ── CARD ── */
+.song-card {
+  background: #fff !important;
+  border: 1px solid #E2DDD5 !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.07) !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* ── CARD BODY ── */
+.card-body {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px 16px 8px !important;
+  gap: 10px !important;
+  text-align: center !important;
+}
+
+.card-icon {
+  width: 52px !important; height: 52px !important;
+  border-radius: 12px !important;
+  background: #F0EFE9 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 26px !important;
+  flex-shrink: 0 !important;
+}
+
+.card-song {
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  color: #0C2340 !important;
+  line-height: 1.2 !important;
+}
+.card-artist {
+  font-size: 12px !important;
+  color: #999 !important;
+  margin-top: 2px !important;
+}
+
+.card-chips {
+  display: flex !important;
+  gap: 6px !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+}
+.chip {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: .05em !important;
+  padding: 3px 9px !important;
+  border-radius: 20px !important;
+}
+.chip-es { background: #EEF6FF !important; color: #1A6BAD !important; }
+.chip-en { background: #F0FAF0 !important; color: #2E7D32 !important; }
+
+/* ── BUTTONS ── */
+.card-links {
+  display: flex !important;
+  gap: 8px !important;
+  padding: 0 12px 12px !important;
+  flex-shrink: 0 !important;
+}
+.btn {
+  flex: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  padding: 10px 12px !important;
+  border-radius: 8px !important;
+  font-family: 'Archivo', Arial, sans-serif !important;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  border: none !important;
+  transition: opacity .15s !important;
+}
+.btn:hover { opacity: .82 !important; }
+.btn-yt {
+  background: #FF0000 !important;
+  color: #fff !important;
+}
+.btn-letra {
+  background: #F0EFE9 !important;
+  border: 1px solid #D5D0C8 !important;
+  color: #333 !important;
+}
+/* YouTube play icon */
+.yt-icon {
+  width: 16px !important; height: 16px !important;
+  background: #fff !important;
+  border-radius: 3px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+.yt-icon::after {
+  content: '' !important;
+  border-left: 7px solid #FF0000 !important;
+  border-top: 4.5px solid transparent !important;
+  border-bottom: 4.5px solid transparent !important;
+  margin-left: 1px !important;
+}
+</style>
+</head>
+<body>
+
+<div class="cards-grid">
+
+  <!-- 1. La copa rota -->
+  <div class="song-card">
+    <div class="card-body">
+      <div class="card-icon">🎵</div>
+      <div>
+        <div class="card-song">Una cerveza</div>
+        <div class="card-artist">Ráfaga</div>
+      </div>
+      <div class="card-chips">
+        <span class="chip chip-es">🇦🇷 Español</span>
+      </div>
+    </div>
+    <div class="card-links">
+      <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=una+cerveza+rafaga+oficial" target="_blank">
+        <span class="yt-icon"></span> YouTube
+      </a>
+      <a class="btn btn-letra" href="https://genius.com/Rafaga-una-cerveza-lyrics" target="_blank">
+        📄 Letra
+      </a>
+    </div>
+  </div>
+
+  <!-- 2. Red Red Wine -->
+  <div class="song-card">
+    <div class="card-body">
+      <div class="card-icon">🎵</div>
+      <div>
+        <div class="card-song">Red Red Wine</div>
+        <div class="card-artist">UB40</div>
+      </div>
+      <div class="card-chips">
+        <span class="chip chip-en">🇬🇧 Inglés</span>
+      </div>
+    </div>
+    <div class="card-links">
+      <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=red+red+wine+ub40+official" target="_blank">
+        <span class="yt-icon"></span> YouTube
+      </a>
+      <a class="btn btn-letra" href="https://genius.com/Ub40-red-red-wine-lyrics" target="_blank">
+        📄 Letra
+      </a>
+    </div>
+  </div>
+
+  <!-- 3. Mariposa Traicionera -->
+  <div class="song-card">
+    <div class="card-body">
+      <div class="card-icon">🎵</div>
+      <div>
+        <div class="card-song">Mariposa Traicionera</div>
+        <div class="card-artist">Maná</div>
+      </div>
+      <div class="card-chips">
+        <span class="chip chip-es">🇲🇽 Español</span>
+      </div>
+    </div>
+    <div class="card-links">
+      <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=mariposa+traicionera+mana+official" target="_blank">
+        <span class="yt-icon"></span> YouTube
+      </a>
+      <a class="btn btn-letra" href="https://genius.com/Mana-mariposa-traicionera-lyrics" target="_blank">
+        📄 Letra
+      </a>
+    </div>
+  </div>
+
+  <!-- 4. Lucy in the Sky -->
+  <div class="song-card">
+    <div class="card-body">
+      <div class="card-icon">🎵</div>
+      <div>
+        <div class="card-song">Lucy in the Sky with Diamonds</div>
+        <div class="card-artist">The Beatles</div>
+      </div>
+      <div class="card-chips">
+        <span class="chip chip-en">🇬🇧 Inglés</span>
+      </div>
+    </div>
+    <div class="card-links">
+      <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=lucy+in+the+sky+with+diamonds+beatles+official" target="_blank">
+        <span class="yt-icon"></span> YouTube
+      </a>
+      <a class="btn btn-letra" href="https://genius.com/The-beatles-lucy-in-the-sky-with-diamonds-lyrics" target="_blank">
+        📄 Letra
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function fixColors() {
+  document.querySelectorAll('.card-song').forEach(function(el){
+    el.style.setProperty('color','#0C2340','important');
+  });
+  document.querySelectorAll('.btn-yt').forEach(function(el){
+    el.style.setProperty('color','#fff','important');
+  });
+  document.querySelectorAll('.chip-es').forEach(function(el){
+    el.style.setProperty('color','#1A6BAD','important');
+  });
+  document.querySelectorAll('.chip-en').forEach(function(el){
+    el.style.setProperty('color','#2E7D32','important');
+  });
+}
+fixColors();
+setTimeout(fixColors,300);
+setTimeout(fixColors,1000);
+</script>
+
+</body>
+</html>
