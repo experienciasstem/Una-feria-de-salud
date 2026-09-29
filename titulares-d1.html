@@ -3,335 +3,309 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Titulares · Salud y entorno</title>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet"/>
+  <title>Portal de noticias · Salud</title>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <style>
-    html, body, div, span, p, a, button, label {
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, div, span, p, a, button, h1, h2, h3, time, * {
       font-family: 'Archivo', sans-serif !important;
-      color: #1A1A1A !important;
       text-decoration: none !important;
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html, body {
       height: 100% !important;
-      background: #EFEFED !important;
-      padding: 0 !important;
+      background: #FFFFFF !important;
+      color: #1A1A1A !important;
       overflow: hidden !important;
     }
     body { display: flex !important; flex-direction: column !important; }
 
-    /* ── Barra ── */
+    /* ── Barra superior ── */
     .bar {
       background: #0C2340 !important;
       padding: 10px 16px;
       display: flex; align-items: center; justify-content: space-between;
-      flex-shrink: 0; margin-bottom: 12px;
+      flex-shrink: 0;
     }
     .bar-lbl {
       font-size: 14px !important; font-weight: 700 !important;
       letter-spacing: .08em; text-transform: uppercase;
-      color: rgba(255,255,255,.85) !important;
+      color: #FFFFFF !important;
     }
     .bar-count {
-      font-size: 13px !important; color: rgba(255,255,255,.45) !important;
-      font-weight: 400 !important;
+      font-size: 13px !important; font-weight: 600 !important;
+      color: #FFFFFF !important;
+      font-variant-numeric: tabular-nums;
     }
 
-    /* ── Carrusel wrapper ── */
+    /* ── Consigna ── */
+    .consigna {
+      padding: 14px 20px 12px;
+      font-size: 17px !important; font-weight: 500 !important;
+      line-height: 1.4 !important;
+      color: #1A1A1A !important;
+      flex-shrink: 0;
+      max-width: 900px;
+    }
+
+    /* ── Carrusel ── */
     .carousel-wrap {
       flex: 1 !important; display: flex !important;
-      align-items: stretch; gap: 6px;
-      padding: 0 10px 12px;
+      align-items: stretch; gap: 10px;
+      padding: 0 12px 6px;
       min-height: 0;
     }
-
-    /* Flechas */
     .arrow {
       align-self: center;
-      width: 32px; height: 32px; border-radius: 50%;
-      background: #0C2340 !important; color: #fff !important;
-      border: none; font-size: 16px; cursor: pointer;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #0C2340 !important; color: #FFFFFF !important;
+      border: none; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; opacity: .85;
-      transition: opacity .15s;
+      flex-shrink: 0;
+      transition: background .15s, opacity .15s;
     }
-    .arrow:hover { opacity: 1; }
-    .arrow:disabled { opacity: .25; cursor: default; }
+    .arrow svg { width: 18px; height: 18px; stroke: #FFFFFF; }
+    .arrow:hover:not(:disabled) { background: #1A3A5C !important; }
+    .arrow:disabled { opacity: .2; cursor: default; }
+    .arrow:focus-visible { outline: 3px solid #7FA7D9; outline-offset: 2px; }
 
-    /* Viewport */
-    .carousel-viewport {
-      flex: 1; overflow: hidden; height: 100%;
-    }
-    .carousel-track {
-      display: flex; gap: 8px; height: 100%;
-      transition: transform .3s ease;
+    .viewport { flex: 1; overflow: hidden; min-width: 0; padding: 4px 2px; box-sizing: border-box; }
+    .track {
+      display: flex; gap: 16px; height: 100%;
+      transition: transform .35s ease;
     }
 
-    /* Tarjeta */
+    /* ── Tarjeta ── */
     .card {
       flex-shrink: 0;
-      width: calc((100%) / 4);
-      background: #fff !important;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,.10);
-      border: 1px solid #E2DDD5;
-      display: flex; flex-direction: column;
-    }
-
-    /* Parte superior de la tarjeta */
-    .card-top {
-      background: #0C2340 !important;
-      padding: 14px 14px 10px;
-      display: flex; flex-direction: column; gap: 8px;
-      flex-shrink: 0;
-    }
-    .card-img {
-      background: var(--cat) !important;
-      border-radius: 6px;
-      height: 52px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .card-source-name {
-      font-size: 15px !important; font-weight: 700 !important;
-      color: #fff !important; letter-spacing: .02em;
+      background: #FFFFFF !important;
+      border: 1px solid #DCDCDC;
+      border-top: 4px solid var(--cat);
+      border-radius: 8px;
+      padding: 18px 20px 18px;
+      display: flex; flex-direction: column; gap: 12px;
+      min-height: 0;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
     }
     .card-meta {
-      display: flex; align-items: center; gap: 6px;
+      display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #EBEBEB;
     }
-    .card-tag {
-      font-size: 9px !important; font-weight: 700 !important;
+    .card-medio {
+      font-size: 13px !important; font-weight: 700 !important;
+      color: #0C2340 !important;
+      letter-spacing: .02em;
+    }
+    .card-fecha {
+      font-size: 12px !important; font-weight: 400 !important;
+      color: #666666 !important;
+      white-space: nowrap;
+    }
+    .card-cat {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 11px !important; font-weight: 700 !important;
       text-transform: uppercase; letter-spacing: .08em;
-      color: #fff !important; background: var(--cat) !important;
-      padding: 2px 7px; border-radius: 3px;
+      color: #4A4A4A !important;
     }
-    .card-date {
-      font-size: 10px !important; color: rgba(255,255,255,.5) !important;
-      font-weight: 400 !important;
+    .card-cat::before {
+      content: ""; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--cat); flex-shrink: 0;
     }
-
-    /* Parte inferior de la tarjeta */
-    .card-body {
-      flex: 1; padding: 12px 14px 12px;
-      display: flex; flex-direction: column; gap: 8px;
+    .card-titular {
+      font-size: 20px !important; font-weight: 700 !important;
+      line-height: 1.28 !important;
+      color: #111111 !important;
     }
-    .card-headline {
-      font-family: 'Playfair Display', serif !important;
-      font-style: italic !important;
-      font-size: 15px !important; font-weight: 700 !important;
-      line-height: 1.3 !important; color: #111 !important;
+    .card-bajada {
+      font-size: 15px !important; font-weight: 400 !important;
+      line-height: 1.55 !important;
+      color: #444444 !important;
       flex: 1;
-    }
-    .card-excerpt {
-      font-size: 11px !important; color: #777 !important;
-      line-height: 1.45 !important; font-weight: 400 !important;
+      overflow: auto;
     }
     .card-link {
-      display: inline-flex; align-items: center; gap: 4px;
-      font-size: 12px !important; font-weight: 700 !important;
-      color: var(--cat) !important;
-      border: 1.5px solid var(--cat);
-      border-radius: 6px; padding: 5px 12px;
       align-self: flex-start;
-      transition: background .12s;
-      text-decoration: none !important;
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #0C2340 !important; color: #FFFFFF !important;
+      font-size: 14px !important; font-weight: 700 !important;
+      padding: 10px 18px; border-radius: 6px;
+      transition: background .15s;
     }
-    .card-link:hover {
-      background: var(--cat) !important; color: #fff !important;
+    .card-link svg { width: 14px; height: 14px; stroke: #FFFFFF; }
+    .card-link:hover { background: #1A3A5C !important; }
+    .card-link:focus-visible { outline: 3px solid #7FA7D9; outline-offset: 2px; }
+
+    /* ── Indicador de avance ── */
+    .progress {
+      flex-shrink: 0;
+      display: flex; justify-content: center; gap: 6px;
+      padding: 8px 0 14px;
+    }
+    .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #D0D0D0 !important;
+      border: none; cursor: pointer;
+      transition: background .15s, width .15s;
+    }
+    .dot.on { background: #0C2340 !important; width: 22px; border-radius: 4px; }
+
+    @media (max-width: 600px) {
+      .consigna { font-size: 15px !important; padding: 12px 16px 10px; }
+      .card-titular { font-size: 18px !important; }
+      .arrow { width: 34px; height: 34px; }
+      .carousel-wrap { gap: 6px; padding: 0 8px 6px; }
     }
   </style>
 </head>
 <body>
 
 <div class="bar">
-  <span class="bar-lbl">Portal de Noticias</span>
-  <span class="bar-count">8 titulares</span>
+  <span class="bar-lbl">Portal de noticias</span>
+  <span class="bar-count" id="count" aria-live="polite">1 de 8</span>
 </div>
+
+<p class="consigna">Recorré los titulares y sus bajadas. Elegí la noticia que más te interese y abrila para conocer más sobre el tema.</p>
 
 <div class="carousel-wrap">
-  <button class="arrow" id="prev" onclick="move(-1)">&#8249;</button>
+  <button class="arrow" id="prev" aria-label="Noticia anterior" onclick="move(-1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
 
-  <div class="carousel-viewport">
-    <div class="carousel-track" id="track">
-
-      <div class="card" style="--cat:#C0392B">
-        <div class="card-top">
-          <div class="card-img">
-            <span class="card-source-name" style="color:#fff!important">Pura Ciudad</span>
-          </div>
-          <div class="card-meta">
-            <span class="card-tag" style="color:#fff!important;background:#C0392B!important">Epidemia</span>
-            <span class="card-date" style="color:rgba(255,255,255,.5)!important">Ago. 2026</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-headline" style="color:#111!important">"La Ciudad lanzó su campaña de prevención contra el dengue para la temporada 2026/2027"</div>
-          <div class="card-excerpt" style="color:#777!important">El Gobierno porteño pone en marcha acciones para reducir el impacto del dengue antes del verano.</div>
-          <a class="card-link" href="https://www.puraciudad.com.ar/la-ciudad-puso-en-marcha-la-campana-de-prevencion-contra-el-dengue-para-la-temporada-2026-2027/" target="_blank" rel="noopener" style="color:#C0392B!important">Leer más ›</a>
-        </div>
-      </div>
-
-      <div class="card" style="--cat:#1A6BAD">
-        <div class="card-top">
-          <div class="card-img">
-            <span class="card-source-name" style="color:#fff!important">Barriada</span>
-          </div>
-          <div class="card-meta">
-            <span class="card-tag" style="color:#fff!important;background:#1A6BAD!important">Acceso a la salud</span>
-            <span class="card-date" style="color:rgba(255,255,255,.5)!important">Ago. 2026</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-headline" style="color:#111!important">"El Ramos Mejía, primer hospital público porteño con trasplante de médula ósea para adultos"</div>
-          <div class="card-excerpt" style="color:#777!important">Un avance histórico en el acceso a tratamientos complejos dentro del sistema público de salud.</div>
-          <a class="card-link" href="https://www.barriada.com.ar/el-ramos-mejia-se-convierte-en-el-primer-hospital-publico-porteno-con-trasplante-de-medula-osea-para-adultos/" target="_blank" rel="noopener" style="color:#1A6BAD!important">Leer más ›</a>
-        </div>
-      </div>
-
-      <div class="card" style="--cat:#2E7D32">
-        <div class="card-top">
-          <div class="card-img">
-            <span class="card-source-name" style="color:#fff!important">Noticias Amb.</span>
-          </div>
-          <div class="card-meta">
-            <span class="card-tag" style="color:#fff!important;background:#2E7D32!important">Ambiente</span>
-            <span class="card-date" style="color:rgba(255,255,255,.5)!important">2025</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-headline" style="color:#111!important">"¿En qué mes el aire está más contaminado en Buenos Aires?"</div>
-          <div class="card-excerpt" style="color:#777!important">Un análisis sobre los niveles de contaminación del aire en la ciudad y sus efectos en la salud.</div>
-          <a class="card-link" href="https://noticiasambientales.com/environment-en/in-which-month-is-the-air-most-polluted-in-buenos-aires/" target="_blank" rel="noopener" style="color:#2E7D32!important">Leer más ›</a>
-        </div>
-      </div>
-
-      <div class="card" style="--cat:#6A1B9A">
-        <div class="card-top">
-          <div class="card-img">
-            <span class="card-source-name" style="color:#fff!important">GCABA</span>
-          </div>
-          <div class="card-meta">
-            <span class="card-tag" style="color:#fff!important;background:#6A1B9A!important">Ruido</span>
-            <span class="card-date" style="color:rgba(255,255,255,.5)!important">2025</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-headline" style="color:#111!important">"Mapa de Ruido: conocé los niveles de contaminación sonora en tu barrio"</div>
-          <div class="card-excerpt" style="color:#777!important">La Ciudad mapeó los niveles de ruido barrio por barrio. ¿Cómo está tu zona?</div>
-          <a class="card-link" href="https://buenosaires.gob.ar/impacto-acustico/mapa-de-ruido" target="_blank" rel="noopener" style="color:#6A1B9A!important">Ver mapa ›</a>
-        </div>
-      </div>
-
-      <div class="card" style="--cat:#E65100">
-        <div class="card-top">
-          <div class="card-img">
-            <span class="card-source-name" style="color:#fff!important">Min. Salud PBA</span>
-          </div>
-          <div class="card-meta">
-            <span class="card-tag" style="color:#fff!important;background:#E65100!important">Desigualdad</span>
-            <span class="card-date" style="color:rgba(255,255,255,.5)!important">2026</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-headline" style="color:#111!important">"Provincia y la OPS se unen contra la tuberculosis en grandes ciudades"</div>
-          <div class="card-excerpt" style="color:#777!important">Una enfermedad que afecta más a los barrios con menos recursos. La alianza apunta a reducir la brecha.</div>
-          <a class="card-link" href="https://www.gba.gob.ar/saludprovincia/noticias/provincia_y_ops_se_unen_contra_la_tuberculosis_en_grandes_ciudades" target="_blank" rel="noopener" style="color:#E65100!important">Leer más ›</a>
-        </div>
-      </div>
-
-      <div class="card" style="--cat:#4E6B3A">
-        <div class="card-top">
-          <div class="card-img">
-            <span class="card-source-name" style="color:#fff!important">GCABA</span>
-          </div>
-          <div class="card-meta">
-            <span class="card-tag" style="color:#fff!important;background:#4E6B3A!important">Residuos</span>
-            <span class="card-date" style="color:rgba(255,255,255,.5)!important">2024</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-headline" style="color:#111!important">"Problemas ambientales urbanos: basura, contaminación y salud en la Ciudad"</div>
-          <div class="card-excerpt" style="color:#777!important">Los residuos acumulados en las calles son mucho más que un problema estético: afectan la salud de todos.</div>
-          <a class="card-link" href="https://buenosaires.gob.ar/gcaba_historico/salud-ambiental/problemas-ambientales-urbanos" target="_blank" rel="noopener" style="color:#4E6B3A!important">Leer más ›</a>
-        </div>
-      </div>
-
-      <div class="card" style="--cat:#0277BD">
-        <div class="card-top">
-          <div class="card-img">
-            <span class="card-source-name" style="color:#fff!important">Infobae</span>
-          </div>
-          <div class="card-meta">
-            <span class="card-tag" style="color:#fff!important;background:#0277BD!important">Estilo de vida</span>
-            <span class="card-date" style="color:rgba(255,255,255,.5)!important">Mar. 2026</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-headline" style="color:#111!important">"La nueva pirámide alimentaria: más comida real y el rol de los ultraprocesados"</div>
-          <div class="card-excerpt" style="color:#777!important">Lo que comemos todos los días impacta directamente en nuestra salud. ¿Qué dice la nueva guía?</div>
-          <a class="card-link" href="https://www.infobae.com/america/ciencia-america/2026/03/03/la-nueva-piramide-alimentaria-mas-comida-real-y-el-rol-inquietante-de-los-ultraprocesados/" target="_blank" rel="noopener" style="color:#0277BD!important">Leer más ›</a>
-        </div>
-      </div>
-
-      <div class="card" style="--cat:#AD1457">
-        <div class="card-top">
-          <div class="card-img">
-            <span class="card-source-name" style="color:#fff!important">GCABA</span>
-          </div>
-          <div class="card-meta">
-            <span class="card-tag" style="color:#fff!important;background:#AD1457!important">Prevención</span>
-            <span class="card-date" style="color:rgba(255,255,255,.5)!important">2024</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-headline" style="color:#111!important">"La Ciudad presentó el primer estudio sobre prácticas de riesgo adictivo"</div>
-          <div class="card-excerpt" style="color:#777!important">El primer relevamiento porteño sobre consumos problemáticos abre el debate sobre cómo actuar desde la comunidad.</div>
-          <a class="card-link" href="http://buenosaires.gob.ar/noticias/la-ciudad-presento-el-primer-estudio-sobre-practicas-de-riesgo-adictivo" target="_blank" rel="noopener" style="color:#AD1457!important">Leer más ›</a>
-        </div>
-      </div>
-
-    </div>
+  <div class="viewport" id="viewport">
+    <div class="track" id="track"></div>
   </div>
 
-  <button class="arrow" id="next" onclick="move(1)">&#8250;</button>
+  <button class="arrow" id="next" aria-label="Noticia siguiente" onclick="move(1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+  </button>
 </div>
 
-<script>
-  const track = document.getElementById('track');
-  const cards = track.querySelectorAll('.card');
-  const visible = 4;
-  let current = 0;
-  const max = cards.length - visible;
+<div class="progress" id="progress"></div>
 
-  function getCardW() {
-    return cards[0].offsetWidth + 8;
+<script>
+  const noticias = [
+    {
+      cat: 'Residuos y ambiente', color: '#8A6D3B', medio: 'La Nación', fecha: '3 may. 2026',
+      titular: 'Contenedores colapsados: el desborde de basura ya es parte del paisaje en los cinco barrios porteños con más reclamos',
+      bajada: 'La acumulación de residuos genera reclamos en distintos barrios de la Ciudad. La nota muestra dónde se concentra el problema y cómo afecta el espacio cotidiano de quienes viven y circulan por esas zonas.',
+      url: 'https://www.lanacion.com.ar/sociedad/contenedores-colapsados-el-desborde-de-basura-ya-es-parte-del-paisaje-en-los-cinco-barrios-portenos-nid03052026/'
+    },
+    {
+      cat: 'Contaminación y descanso', color: '#5B5F97', medio: 'Infobae', fecha: '18 abr. 2026',
+      titular: 'Cómo la contaminación lumínica y sonora impactan en la calidad del sueño y la salud de las personas',
+      bajada: 'El ruido y la iluminación nocturna forman parte de la vida en las grandes ciudades. Distintos estudios analizan cómo la exposición a estos estímulos puede alterar el descanso y afectar la salud.',
+      url: 'https://www.infobae.com/salud/2026/04/18/como-la-contaminacion-luminica-y-sonora-impactan-en-la-calidad-del-sueno-y-la-salud-de-las-personas/'
+    },
+    {
+      cat: 'Trabajo y descanso', color: '#6B7A8F', medio: 'El País', fecha: '10 feb. 2025',
+      titular: 'Turnos, sedentarismo, hiperconexión, estrés: cómo el trabajo nos roba el sueño',
+      bajada: 'Los horarios laborales, el estrés, el uso constante de dispositivos y algunas formas de trabajo pueden dificultar el descanso. La nota analiza la relación entre la vida laboral, el sueño y la salud.',
+      url: 'https://elpais.com/salud-y-bienestar/2025-02-10/turnos-sedentarismo-hiperconexion-estres-como-el-trabajo-nos-roba-el-sueno.html'
+    },
+    {
+      cat: 'Espacios verdes', color: '#4E7A4F', medio: 'La Nación', fecha: '23 ene. 2026',
+      titular: 'Plazas, parques y bosques urbanos: la hoja de ruta ambiental desde los vecinos porteños para mitigar las olas de calor',
+      bajada: 'Los espacios verdes pueden ayudar a reducir las altas temperaturas y ofrecer lugares para el encuentro y la recreación. La nota recorre propuestas de vecinos de distintos barrios porteños frente a las olas de calor.',
+      url: 'https://www.lanacion.com.ar/sociedad/plazas-parques-y-bosques-urbanos-la-hoja-de-ruta-ambiental-desde-los-vecinos-portenos-para-mitigar-nid23012026/'
+    },
+    {
+      cat: 'Acceso a la salud', color: '#2F6B9A', medio: 'La Nación', fecha: '24 feb. 2026',
+      titular: 'Ciudad: un nuevo centro gratuito de especialidades médicas acerca servicios cruciales a los vecinos de dos comunas',
+      bajada: 'La ubicación de los servicios de salud puede facilitar o dificultar el acceso a la atención. Un nuevo centro acerca distintas especialidades médicas a habitantes de dos comunas de la Ciudad.',
+      url: 'https://www.lanacion.com.ar/sociedad/ciudad-un-nuevo-centro-gratuito-de-especialidades-medicas-acerca-servicios-cruciales-a-los-vecinos-nid24022026/'
+    },
+    {
+      cat: 'Enfermedades no transmisibles', color: '#9A4B4B', medio: 'Infobae', fecha: '12 jul. 2025',
+      titular: 'El tabaco, la obesidad y el sedentarismo están detrás del aumento de las enfermedades no transmisibles',
+      bajada: 'Las enfermedades cardiovasculares, respiratorias, el cáncer y la diabetes representan un importante problema de salud. La nota analiza algunos factores asociados con su aumento y las posibilidades de prevención.',
+      url: 'https://www.infobae.com/salud/2025/07/12/el-tabaco-la-obesidad-y-el-sedentarismo-estan-detras-del-aumento-de-las-enfermedades-no-transmisibles/'
+    },
+    {
+      cat: 'Alimentación', color: '#B07A2A', medio: 'El País', fecha: '19 nov. 2025',
+      titular: 'La invasión de los ultraprocesados: un centenar de estudios denuncia cómo ‘la industria alimentaria amenaza la salud pública’',
+      bajada: 'Los productos ultraprocesados ocupan un lugar cada vez mayor en la alimentación cotidiana. Investigaciones recientes analizan su relación con la salud y el papel que desempeña la industria alimentaria.',
+      url: 'https://elpais.com/salud-y-bienestar/2025-11-19/la-invasion-de-los-ultraprocesados-un-centenar-de-estudios-denuncia-como-la-industria-alimentaria-amenaza-la-salud-publica.html'
+    },
+    {
+      cat: 'Barrio y calidad de vida', color: '#3F7F7A', medio: 'El Destape', fecha: '12 nov. 2025',
+      titular: 'No es Palermo: este es el mejor barrio de la ciudad de Buenos Aires para vivir, según un estudio',
+      bajada: '¿Qué características hacen que un barrio sea considerado un buen lugar para vivir? El estudio compara zonas de Buenos Aires considerando aspectos como espacios verdes, contaminación, transporte y acceso a servicios de salud.',
+      url: 'https://www.eldestapeweb.com/sociedad/ciudad-autonoma-buenos-aires/no-es-palermo-este-es-el-mejor-barrio-de-la-ciudad-de-buenos-aires-para-vivir-segun-un-estudio-2025111219245'
+    }
+  ];
+
+  const track = document.getElementById('track');
+  const extIcon = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
+
+  track.innerHTML = noticias.map((n, i) => `
+    <article class="card" style="--cat:${n.color}" aria-label="Noticia ${i + 1} de ${noticias.length}">
+      <div class="card-meta">
+        <span class="card-medio">${n.medio}</span>
+        <span class="card-fecha">${n.fecha}</span>
+      </div>
+      <span class="card-cat">${n.cat}</span>
+      <h2 class="card-titular">${n.titular}</h2>
+      <p class="card-bajada">${n.bajada}</p>
+      <a class="card-link" href="${n.url}" target="_blank" rel="noopener noreferrer">Leer noticia ${extIcon}</a>
+    </article>`).join('');
+
+  const cards = track.querySelectorAll('.card');
+  const total = cards.length;
+  const GAP = 16;
+  let current = 0;
+
+  function visible() {
+    const w = document.getElementById('viewport').clientWidth;
+    if (w >= 820) return 3;
+    if (w >= 520) return 2;
+    return 1;
   }
 
-  function move(dir) {
-    current = Math.max(0, Math.min(max, current + dir));
-    track.style.transform = 'translateX(-' + (current * getCardW()) + 'px)';
+  const progress = document.getElementById('progress');
+
+  function layout() {
+    const v = visible();
+    const w = document.getElementById('viewport').clientWidth - 4;
+    const cw = (w - GAP * (v - 1)) / v;
+    cards.forEach(c => c.style.width = cw + 'px');
+    const max = total - v;
+    current = Math.max(0, Math.min(max, current));
+    track.style.transform = 'translateX(-' + (current * (cw + GAP)) + 'px)';
     document.getElementById('prev').disabled = current === 0;
     document.getElementById('next').disabled = current >= max;
+
+    const last = current + v;
+    document.getElementById('count').textContent =
+      v === 1 ? (current + 1) + ' de ' + total : (current + 1) + '–' + last + ' de ' + total;
+
+    progress.innerHTML = '';
+    for (let i = 0; i <= max; i++) {
+      const d = document.createElement('button');
+      d.className = 'dot' + (i === current ? ' on' : '');
+      d.setAttribute('aria-label', 'Ir a la posición ' + (i + 1));
+      d.onclick = () => { current = i; layout(); };
+      progress.appendChild(d);
+    }
   }
 
-  function fixColors() {
-    document.querySelectorAll('.card-headline').forEach(el => {
-      el.style.setProperty('color', '#111', 'important');
-      el.style.setProperty('font-family', "'Playfair Display', serif", 'important');
-    });
-    document.querySelectorAll('.card-excerpt').forEach(el => {
-      el.style.setProperty('color', '#777', 'important');
-    });
-    document.querySelectorAll('.card-source-name').forEach(el => {
-      el.style.setProperty('color', '#fff', 'important');
-    });
-  }
+  function move(dir) { current += dir; layout(); }
 
-  move(0);
-  fixColors();
-  setTimeout(fixColors, 300);
-  setTimeout(fixColors, 1000);
+  window.addEventListener('resize', layout);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') move(-1);
+    if (e.key === 'ArrowRight') move(1);
+  });
+
+  let startX = null;
+  track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend', e => {
+    if (startX === null) return;
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 40) move(dx < 0 ? 1 : -1);
+    startX = null;
+  });
+
+  layout();
 </script>
 </body>
 </html>
