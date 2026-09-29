@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Titulares · Salud y entorno</title>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet"/>
+  <style>
+    html, body, div, span, p, a, button, label {
+      font-family: 'Archivo', sans-serif !important;
+      color: #1A1A1A !important;
+      text-decoration: none !important;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100% !important;
+      background: #EFEFED !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+    }
+    body { display: flex !important; flex-direction: column !important; }
+
+    /* ── Barra ── */
+    .bar {
+      background: #0C2340 !important;
+      padding: 10px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0; margin-bottom: 12px;
+    }
+    .bar-lbl {
+      font-size: 14px !important; font-weight: 700 !important;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: rgba(255,255,255,.85) !important;
+    }
+    .bar-count {
+      font-size: 13px !important; color: rgba(255,255,255,.45) !important;
+      font-weight: 400 !important;
+    }
+
+    /* ── Carrusel wrapper ── */
+    .carousel-wrap {
+      flex: 1 !important; display: flex !important;
+      align-items: stretch; gap: 6px;
+      padding: 0 10px 12px;
+      min-height: 0;
+    }
+
+    /* Flechas */
+    .arrow {
+      align-self: center;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: #0C2340 !important; color: #fff !important;
+      border: none; font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; opacity: .85;
+      transition: opacity .15s;
+    }
+    .arrow:hover { opacity: 1; }
+    .arrow:disabled { opacity: .25; cursor: default; }
+
+    /* Viewport */
+    .carousel-viewport {
+      flex: 1; overflow: hidden; height: 100%;
+    }
+    .carousel-track {
+      display: flex; gap: 8px; height: 100%;
+      transition: transform .3s ease;
+    }
+
+    /* Tarjeta */
+    .card {
+      flex-shrink: 0;
+      width: calc((100%) / 4);
+      background: #fff !important;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,.10);
+      border: 1px solid #E2DDD5;
+      display: flex; flex-direction: column;
+    }
+
+    /* Parte superior de la tarjeta */
+    .card-top {
+      background: #0C2340 !important;
+      padding: 14px 14px 10px;
+      display: flex; flex-direction: column; gap: 8px;
+      flex-shrink: 0;
+    }
+    .card-img {
+      background: var(--cat) !important;
+      border-radius: 6px;
+      height: 52px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card-source-name {
+      font-size: 15px !important; font-weight: 700 !important;
+      color: #fff !important; letter-spacing: .02em;
+    }
+    .card-meta {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .card-tag {
+      font-size: 9px !important; font-weight: 700 !important;
+      text-transform: uppercase; letter-spacing: .08em;
+      color: #fff !important; background: var(--cat) !important;
+      padding: 2px 7px; border-radius: 3px;
+    }
+    .card-date {
+      font-size: 10px !important; color: rgba(255,255,255,.5) !important;
+      font-weight: 400 !important;
+    }
+
+    /* Parte inferior de la tarjeta */
+    .card-body {
+      flex: 1; padding: 12px 14px 12px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .card-headline {
+      font-family: 'Playfair Display', serif !important;
+      font-style: italic !important;
+      font-size: 15px !important; font-weight: 700 !important;
+      line-height: 1.3 !important; color: #111 !important;
+      flex: 1;
+    }
+    .card-excerpt {
+      font-size: 11px !important; color: #777 !important;
+      line-height: 1.45 !important; font-weight: 400 !important;
+    }
+    .card-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 12px !important; font-weight: 700 !important;
+      color: var(--cat) !important;
+      border: 1.5px solid var(--cat);
+      border-radius: 6px; padding: 5px 12px;
+      align-self: flex-start;
+      transition: background .12s;
+      text-decoration: none !important;
+    }
+    .card-link:hover {
+      background: var(--cat) !important; color: #fff !important;
+    }
+  </style>
+</head>
+<body>
+
+<div class="bar">
+  <span class="bar-lbl">Portal de Noticias</span>
+  <span class="bar-count">8 titulares</span>
+</div>
+
+<div class="carousel-wrap">
+  <button class="arrow" id="prev" onclick="move(-1)">&#8249;</button>
+
+  <div class="carousel-viewport">
+    <div class="carousel-track" id="track">
+
+      <div class="card" style="--cat:#C0392B">
+        <div class="card-top">
+          <div class="card-img">
+            <span class="card-source-name" style="color:#fff!important">Pura Ciudad</span>
+          </div>
+          <div class="card-meta">
+            <span class="card-tag" style="color:#fff!important;background:#C0392B!important">Epidemia</span>
+            <span class="card-date" style="color:rgba(255,255,255,.5)!important">Ago. 2026</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-headline" style="color:#111!important">"La Ciudad lanzó su campaña de prevención contra el dengue para la temporada 2026/2027"</div>
+          <div class="card-excerpt" style="color:#777!important">El Gobierno porteño pone en marcha acciones para reducir el impacto del dengue antes del verano.</div>
+          <a class="card-link" href="https://www.puraciudad.com.ar/la-ciudad-puso-en-marcha-la-campana-de-prevencion-contra-el-dengue-para-la-temporada-2026-2027/" target="_blank" rel="noopener" style="color:#C0392B!important">Leer más ›</a>
+        </div>
+      </div>
+
+      <div class="card" style="--cat:#1A6BAD">
+        <div class="card-top">
+          <div class="card-img">
+            <span class="card-source-name" style="color:#fff!important">Barriada</span>
+          </div>
+          <div class="card-meta">
+            <span class="card-tag" style="color:#fff!important;background:#1A6BAD!important">Acceso a la salud</span>
+            <span class="card-date" style="color:rgba(255,255,255,.5)!important">Ago. 2026</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-headline" style="color:#111!important">"El Ramos Mejía, primer hospital público porteño con trasplante de médula ósea para adultos"</div>
+          <div class="card-excerpt" style="color:#777!important">Un avance histórico en el acceso a tratamientos complejos dentro del sistema público de salud.</div>
+          <a class="card-link" href="https://www.barriada.com.ar/el-ramos-mejia-se-convierte-en-el-primer-hospital-publico-porteno-con-trasplante-de-medula-osea-para-adultos/" target="_blank" rel="noopener" style="color:#1A6BAD!important">Leer más ›</a>
+        </div>
+      </div>
+
+      <div class="card" style="--cat:#2E7D32">
+        <div class="card-top">
+          <div class="card-img">
+            <span class="card-source-name" style="color:#fff!important">Noticias Amb.</span>
+          </div>
+          <div class="card-meta">
+            <span class="card-tag" style="color:#fff!important;background:#2E7D32!important">Ambiente</span>
+            <span class="card-date" style="color:rgba(255,255,255,.5)!important">2025</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-headline" style="color:#111!important">"¿En qué mes el aire está más contaminado en Buenos Aires?"</div>
+          <div class="card-excerpt" style="color:#777!important">Un análisis sobre los niveles de contaminación del aire en la ciudad y sus efectos en la salud.</div>
+          <a class="card-link" href="https://noticiasambientales.com/environment-en/in-which-month-is-the-air-most-polluted-in-buenos-aires/" target="_blank" rel="noopener" style="color:#2E7D32!important">Leer más ›</a>
+        </div>
+      </div>
+
+      <div class="card" style="--cat:#6A1B9A">
+        <div class="card-top">
+          <div class="card-img">
+            <span class="card-source-name" style="color:#fff!important">GCABA</span>
+          </div>
+          <div class="card-meta">
+            <span class="card-tag" style="color:#fff!important;background:#6A1B9A!important">Ruido</span>
+            <span class="card-date" style="color:rgba(255,255,255,.5)!important">2025</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-headline" style="color:#111!important">"Mapa de Ruido: conocé los niveles de contaminación sonora en tu barrio"</div>
+          <div class="card-excerpt" style="color:#777!important">La Ciudad mapeó los niveles de ruido barrio por barrio. ¿Cómo está tu zona?</div>
+          <a class="card-link" href="https://buenosaires.gob.ar/impacto-acustico/mapa-de-ruido" target="_blank" rel="noopener" style="color:#6A1B9A!important">Ver mapa ›</a>
+        </div>
+      </div>
+
+      <div class="card" style="--cat:#E65100">
+        <div class="card-top">
+          <div class="card-img">
+            <span class="card-source-name" style="color:#fff!important">Min. Salud PBA</span>
+          </div>
+          <div class="card-meta">
+            <span class="card-tag" style="color:#fff!important;background:#E65100!important">Desigualdad</span>
+            <span class="card-date" style="color:rgba(255,255,255,.5)!important">2026</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-headline" style="color:#111!important">"Provincia y la OPS se unen contra la tuberculosis en grandes ciudades"</div>
+          <div class="card-excerpt" style="color:#777!important">Una enfermedad que afecta más a los barrios con menos recursos. La alianza apunta a reducir la brecha.</div>
+          <a class="card-link" href="https://www.gba.gob.ar/saludprovincia/noticias/provincia_y_ops_se_unen_contra_la_tuberculosis_en_grandes_ciudades" target="_blank" rel="noopener" style="color:#E65100!important">Leer más ›</a>
+        </div>
+      </div>
+
+      <div class="card" style="--cat:#4E6B3A">
+        <div class="card-top">
+          <div class="card-img">
+            <span class="card-source-name" style="color:#fff!important">GCABA</span>
+          </div>
+          <div class="card-meta">
+            <span class="card-tag" style="color:#fff!important;background:#4E6B3A!important">Residuos</span>
+            <span class="card-date" style="color:rgba(255,255,255,.5)!important">2024</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-headline" style="color:#111!important">"Problemas ambientales urbanos: basura, contaminación y salud en la Ciudad"</div>
+          <div class="card-excerpt" style="color:#777!important">Los residuos acumulados en las calles son mucho más que un problema estético: afectan la salud de todos.</div>
+          <a class="card-link" href="https://buenosaires.gob.ar/gcaba_historico/salud-ambiental/problemas-ambientales-urbanos" target="_blank" rel="noopener" style="color:#4E6B3A!important">Leer más ›</a>
+        </div>
+      </div>
+
+      <div class="card" style="--cat:#0277BD">
+        <div class="card-top">
+          <div class="card-img">
+            <span class="card-source-name" style="color:#fff!important">Infobae</span>
+          </div>
+          <div class="card-meta">
+            <span class="card-tag" style="color:#fff!important;background:#0277BD!important">Estilo de vida</span>
+            <span class="card-date" style="color:rgba(255,255,255,.5)!important">Mar. 2026</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-headline" style="color:#111!important">"La nueva pirámide alimentaria: más comida real y el rol de los ultraprocesados"</div>
+          <div class="card-excerpt" style="color:#777!important">Lo que comemos todos los días impacta directamente en nuestra salud. ¿Qué dice la nueva guía?</div>
+          <a class="card-link" href="https://www.infobae.com/america/ciencia-america/2026/03/03/la-nueva-piramide-alimentaria-mas-comida-real-y-el-rol-inquietante-de-los-ultraprocesados/" target="_blank" rel="noopener" style="color:#0277BD!important">Leer más ›</a>
+        </div>
+      </div>
+
+      <div class="card" style="--cat:#AD1457">
+        <div class="card-top">
+          <div class="card-img">
+            <span class="card-source-name" style="color:#fff!important">GCABA</span>
+          </div>
+          <div class="card-meta">
+            <span class="card-tag" style="color:#fff!important;background:#AD1457!important">Prevención</span>
+            <span class="card-date" style="color:rgba(255,255,255,.5)!important">2024</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-headline" style="color:#111!important">"La Ciudad presentó el primer estudio sobre prácticas de riesgo adictivo"</div>
+          <div class="card-excerpt" style="color:#777!important">El primer relevamiento porteño sobre consumos problemáticos abre el debate sobre cómo actuar desde la comunidad.</div>
+          <a class="card-link" href="http://buenosaires.gob.ar/noticias/la-ciudad-presento-el-primer-estudio-sobre-practicas-de-riesgo-adictivo" target="_blank" rel="noopener" style="color:#AD1457!important">Leer más ›</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <button class="arrow" id="next" onclick="move(1)">&#8250;</button>
+</div>
+
+<script>
+  const track = document.getElementById('track');
+  const cards = track.querySelectorAll('.card');
+  const visible = 4;
+  let current = 0;
+  const max = cards.length - visible;
+
+  function getCardW() {
+    return cards[0].offsetWidth + 8;
+  }
+
+  function move(dir) {
+    current = Math.max(0, Math.min(max, current + dir));
+    track.style.transform = 'translateX(-' + (current * getCardW()) + 'px)';
+    document.getElementById('prev').disabled = current === 0;
+    document.getElementById('next').disabled = current >= max;
+  }
+
+  function fixColors() {
+    document.querySelectorAll('.card-headline').forEach(el => {
+      el.style.setProperty('color', '#111', 'important');
+      el.style.setProperty('font-family', "'Playfair Display', serif", 'important');
+    });
+    document.querySelectorAll('.card-excerpt').forEach(el => {
+      el.style.setProperty('color', '#777', 'important');
+    });
+    document.querySelectorAll('.card-source-name').forEach(el => {
+      el.style.setProperty('color', '#fff', 'important');
+    });
+  }
+
+  move(0);
+  fixColors();
+  setTimeout(fixColors, 300);
+  setTimeout(fixColors, 1000);
+</script>
+</body>
+</html>
