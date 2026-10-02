@@ -28,18 +28,18 @@
   .recurso {
     max-width: 980px;
     margin: 0 auto;
-    padding: 24px 16px 20px;
+    padding: 14px 16px 10px;
   }
   .marca {
     width: 56px;
     height: 6px;
     border-radius: 3px;
     background: var(--marca);
-    margin-bottom: 14px;
+    margin-bottom: 10px;
   }
   h1 {
-    margin: 0 0 8px;
-    font-size: clamp(1.5rem, 4.6vw, 2.15rem);
+    margin: 0 0 4px;
+    font-size: clamp(1.35rem, 4vw, 1.9rem);
     line-height: 1.15;
     letter-spacing: -0.01em;
     font-weight: 700;
@@ -47,9 +47,9 @@
   .intro .frase { white-space: nowrap; }
   @media (max-width: 340px) { .intro .frase { white-space: normal; } }
   .intro {
-    margin: 0 0 20px;
-    font-size: clamp(1rem, 2.4vw, 1.0625rem);
-    line-height: 1.5;
+    margin: 0 0 12px;
+    font-size: clamp(0.9375rem, 2.4vw, 1.0625rem);
+    line-height: 1.4;
     color: var(--tenue);
   }
 
@@ -57,10 +57,10 @@
     background: var(--tarjeta);
     border: 1px solid var(--borde);
     border-radius: 14px;
-    padding: 14px 10px 8px;
+    padding: 10px 10px 8px;
   }
   @media (min-width: 600px) {
-    .tarjeta { padding: 20px 18px 10px; }
+    .tarjeta { padding: 12px 16px 10px; }
   }
 
   .grafico {
@@ -134,7 +134,7 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: "grafico" "total" "boton" "tabla";
-    gap: 12px 24px;
+    gap: 8px 24px;
     align-items: start;
   }
   .grafico { grid-area: grafico; min-width: 0; }
@@ -144,7 +144,7 @@
     grid-area: total;
     margin: 0;
     text-align: center;
-    font-size: 14px;
+    font-size: 13px;
     color: var(--tinta);
   }
   .panel-tabla[hidden] { display: none; }
@@ -153,21 +153,28 @@
       grid-template-columns: minmax(0, 1fr) minmax(230px, 270px);
       grid-template-areas: "grafico tabla" "total tabla" "boton tabla";
     }
-    .cuerpo.con-tabla .panel-tabla { margin-top: 26px; }
+    .cuerpo.con-tabla .panel-tabla { margin-top: 22px; }
+  }
+  /* En pantallas angostas la tabla ocupa el lugar del gráfico */
+  @media (max-width: 679px) {
+    .cuerpo.con-tabla .grafico { display: none; }
+    .cuerpo.con-tabla { grid-template-areas: "tabla" "total" "boton"; }
+    .cuerpo .panel-tabla th, .cuerpo .panel-tabla td { padding: 3px 12px; }
+    .cuerpo .panel-tabla thead th { padding-top: 6px; padding-bottom: 6px; }
   }
 
   .boton-tabla {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    min-height: 44px;
-    padding: 8px 14px;
+    min-height: 40px;
+    padding: 6px 14px;
     border: 1px solid var(--marca-oscuro);
     border-radius: 8px;
     background: #fff;
     color: var(--marca-oscuro);
     font: inherit;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
   }
@@ -186,10 +193,10 @@
     border-collapse: collapse;
     background: #fff;
     border: 1px solid var(--borde);
-    font-size: 15px;
+    font-size: 14px;
   }
   .panel-tabla th, .panel-tabla td {
-    padding: 9px 12px;
+    padding: 7px 12px;
     border-bottom: 1px solid var(--grilla);
     text-align: left;
   }
@@ -207,12 +214,12 @@
   .panel-tabla tbody tr:last-child th, .panel-tabla tbody tr:last-child td { border-bottom: 0; }
 
   .notas {
-    margin-top: 14px;
-    font-size: 13px;
-    line-height: 1.5;
+    margin-top: 8px;
+    font-size: 12px;
+    line-height: 1.4;
     color: var(--tenue);
   }
-  .notas p { margin: 0 0 6px; }
+  .notas p { margin: 0; }
   .notas em { font-style: italic; }
 
   .sr-only {
@@ -359,15 +366,23 @@
   var ancho = 0, alto = 0, m = {};
   var activo = -1;
 
-  function layout() {
+  var ALTO_MAXIMO = 520; // alto total máximo del recurso, en píxeles
+  var recurso = document.querySelector(".recurso");
+
+  function layout(forzar) {
     var w = Math.round(contenedor.clientWidth);
     // El SVG escala solo (viewBox + width:100%), así que ignoramos cambios
     // mínimos de ancho (por ejemplo, la aparición de la barra de scroll).
-    if (!w || Math.abs(w - ancho) < 24) return;
+    if (!w || (!forzar && Math.abs(w - ancho) < 24)) return;
     ancho = w;
     var chico = w < 420;
-    alto = Math.round(Math.max(270, Math.min(420, w * 0.58)));
-    m = { arriba: 34, derecha: chico ? 14 : 22, abajo: 38, izquierda: chico ? 46 : 54 };
+    // El gráfico toma el alto que queda libre para que todo el recurso
+    // no supere ALTO_MAXIMO.
+    var altoActual = svg.getBoundingClientRect().height;
+    var otros = recurso.getBoundingClientRect().height - altoActual;
+    var libre = Math.floor(ALTO_MAXIMO - otros - 2);
+    alto = Math.round(Math.max(140, Math.min(libre, 400, w * 0.62)));
+    m = { arriba: 28, derecha: chico ? 14 : 22, abajo: 32, izquierda: chico ? 46 : 54 };
 
     svg.setAttribute("viewBox", "0 0 " + w + " " + alto);
 
@@ -399,7 +414,7 @@
       d += (i === 0 ? "M" : "L") + x.toFixed(1) + "," + y.toFixed(1);
       puntos[i].g.setAttribute("transform", "translate(" + x.toFixed(1) + "," + y.toFixed(1) + ")");
       etiquetasMes[i].setAttribute("x", x);
-      etiquetasMes[i].setAttribute("y", base + 24);
+      etiquetasMes[i].setAttribute("y", base + 22);
       etiquetasMes[i].textContent = chico ? dato.corto : dato.mes;
     });
     dArea = d + "L" + xDe(DATOS.length - 1).toFixed(1) + "," + base + "L" + xDe(0).toFixed(1) + "," + base + "Z";
@@ -501,9 +516,10 @@
     cuerpo.classList.toggle("con-tabla", abrir);
     botonTexto.textContent = abrir ? "Ocultar tabla" : "Ver datos en tabla";
     ocultar();
+    layout(true);
   });
 
-  layout();
+  layout(true);
   if (window.ResizeObserver) {
     var pendiente = false;
     new ResizeObserver(function () {
