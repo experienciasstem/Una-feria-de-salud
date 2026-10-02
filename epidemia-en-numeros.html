@@ -158,7 +158,8 @@
   /* En pantallas angostas la tabla ocupa el lugar del gráfico */
   @media (max-width: 679px) {
     .cuerpo.con-tabla .grafico { display: none; }
-    .cuerpo.con-tabla { grid-template-areas: "tabla" "total" "boton"; }
+    .cuerpo.con-tabla { grid-template-areas: "tabla" "boton"; }
+    .cuerpo.con-tabla .total { display: none; }
     .cuerpo .panel-tabla th, .cuerpo .panel-tabla td { padding: 3px 12px; }
     .cuerpo .panel-tabla thead th { padding-top: 6px; padding-bottom: 6px; }
   }
@@ -366,8 +367,11 @@
   var ancho = 0, alto = 0, m = {};
   var activo = -1;
 
-  var ALTO_MAXIMO = 520; // alto total máximo del recurso, en píxeles
+  var ALTO_LIMITE = 480; // alto total máximo del recurso, en píxeles
+  // Si el marco (iframe) es más bajo que el límite, se ajusta a ese alto.
+  function altoMaximo() { return Math.min(ALTO_LIMITE, window.innerHeight || ALTO_LIMITE); }
   var recurso = document.querySelector(".recurso");
+  var cuerpo = document.getElementById("cuerpo");
 
   function layout(forzar) {
     var w = Math.round(contenedor.clientWidth);
@@ -377,11 +381,15 @@
     ancho = w;
     var chico = w < 420;
     // El gráfico toma el alto que queda libre para que todo el recurso
-    // no supere ALTO_MAXIMO.
-    var altoActual = svg.getBoundingClientRect().height;
-    var otros = recurso.getBoundingClientRect().height - altoActual;
-    var libre = Math.floor(ALTO_MAXIMO - otros - 2);
-    alto = Math.round(Math.max(140, Math.min(libre, 400, w * 0.62)));
+    // no supere el alto máximo.
+    // Se descuenta todo lo que no es la columna del gráfico (título, fuente)
+    // y, dentro de esa columna, el total y el botón. Así la tabla lateral
+    // no achica el gráfico.
+    var fuera = recurso.getBoundingClientRect().height - cuerpo.getBoundingClientRect().height;
+    var columna = document.querySelector(".total").offsetHeight +
+                  document.getElementById("boton-tabla").offsetHeight + 16;
+    var libre = Math.floor(altoMaximo() - fuera - columna - 12);
+    alto = Math.round(Math.max(120, Math.min(libre, 400, w * 0.62)));
     m = { arriba: 28, derecha: chico ? 14 : 22, abajo: 32, izquierda: chico ? 46 : 54 };
 
     svg.setAttribute("viewBox", "0 0 " + w + " " + alto);
@@ -508,7 +516,6 @@
   var boton = document.getElementById("boton-tabla");
   var botonTexto = document.getElementById("boton-texto");
   var panel = document.getElementById("panel-tabla");
-  var cuerpo = document.getElementById("cuerpo");
   boton.addEventListener("click", function () {
     var abrir = boton.getAttribute("aria-expanded") !== "true";
     boton.setAttribute("aria-expanded", String(abrir));
@@ -520,6 +527,10 @@
   });
 
   layout(true);
+  var altoVentana = window.innerHeight;
+  window.addEventListener("resize", function () {
+    if (window.innerHeight !== altoVentana) { altoVentana = window.innerHeight; layout(true); }
+  });
   if (window.ResizeObserver) {
     var pendiente = false;
     new ResizeObserver(function () {
