@@ -15,7 +15,7 @@
     --tenue: #4A5866;
     --fondo: #F7F9FA;
     --blanco: #FFFFFF;
-    --alto: 340px;         /* alto total fijo del recurso */
+    --alto: 420px;         /* alto total fijo del recurso */
   }
   * { box-sizing: border-box; }
   html, body {
@@ -33,11 +33,11 @@
   .app {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 18px;
     max-width: 980px;
     height: min(var(--alto), 100vh);
     margin: 0 auto;
-    padding: 12px 16px;
+    padding: 30px 16px 14px;
   }
 
   h1 {
@@ -46,7 +46,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 20px;
+    font-size: 22px;
     line-height: 1.2;
   }
   h1::before {
@@ -85,8 +85,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
-    padding: 14px 10px 12px;
+    gap: 10px;
+    padding: 20px 10px 16px;
     border: 1.5px solid var(--borde);
     border-radius: 14px;
     background: var(--blanco);
@@ -98,7 +98,7 @@
   .etapa:focus-visible { outline: 3px solid var(--marino); outline-offset: 2px; }
 
   .icono {
-    width: 46px; height: 46px;
+    width: 54px; height: 54px;
     border-radius: 50%;
     background: var(--turquesa);
     color: var(--azul);
@@ -107,17 +107,17 @@
     flex: 0 0 auto;
   }
   .icono svg {
-    width: 24px; height: 24px;
+    width: 28px; height: 28px;
     fill: none;
     stroke: currentColor;
     stroke-width: 1.9;
     stroke-linecap: round;
     stroke-linejoin: round;
   }
-  .palabra { font-size: 16.5px; font-weight: 800; line-height: 1.2; }
+  .palabra { font-size: 18px; font-weight: 800; line-height: 1.2; }
   .bajada {
-    font-size: 14.5px;
-    line-height: 1.35;
+    font-size: 15.5px;
+    line-height: 1.38;
     color: var(--tenue);
     visibility: hidden;
     opacity: 0;
