@@ -80,30 +80,20 @@
   .girar-todas:hover { background: var(--marino); }
   .girar-todas:focus-visible { outline: 3px solid var(--marino); outline-offset: 2px; }
 
-  /* Grupos de a tres */
+  /* Grilla: 12 tarjetas se reparten parejo en 6, 4, 3 o 2 columnas */
   .grilla {
     flex: 1 1 auto;
     min-height: 0;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-auto-rows: minmax(150px, 1fr);
-    gap: 12px 14px;
-    overflow-y: auto;
-    padding: 2px;
-  }
-  .grupo {
     margin: 0;
-    padding: 8px;
+    padding: 2px;
     list-style: none;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--gap);
-    background: var(--azul-suave);
-    border: 1px solid var(--borde);
-    border-radius: 16px;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-auto-rows: minmax(140px, 1fr);
+    gap: 12px;
+    overflow-y: auto;
   }
-  .grupo:nth-child(2), .grupo:nth-child(3) { background: #EAF8F5; border-color: #C9ECE5; }
-  .grupo > li { display: flex; min-height: 0; }
+  .grilla > li { display: flex; min-height: 0; }
 
   .tarjeta {
     position: relative;
@@ -176,6 +166,14 @@
     border: 1px solid var(--azul);
     gap: 7px;
   }
+  .contenido {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
   .categoria-chica {
     font-size: 11px;
     font-weight: 700;
@@ -207,16 +205,21 @@
     .interior { transition: none; }
   }
 
-  /* Pantallas más angostas: los grupos se apilan */
-  @media (max-width: 820px) {
-    .grilla { grid-template-columns: minmax(0, 1fr); }
+  /* Pantallas más angostas */
+  @media (max-width: 900px) {
+    .grilla { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  @media (max-width: 680px) {
+    .grilla { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  }
+  @media (max-width: 440px) {
+    .grilla { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (max-width: 600px) {
     .app { padding: 12px 14px 10px; }
     .cabecera { flex-direction: column; align-items: flex-start; gap: 8px; }
     .pregunta { font-size: 13.5px; }
     .categoria { font-size: 14px; }
-    .grupo { padding: 6px; --gap: 6px; }
   }
 </style>
 </head>
@@ -230,7 +233,7 @@
     <button type="button" class="girar-todas" id="girar-todas" aria-pressed="false">Ver todas las preguntas</button>
   </header>
 
-  <div class="grilla" id="grilla" role="list" aria-label="Campos posibles para la ficha"></div>
+  <ul class="grilla" id="grilla" aria-label="Campos posibles para la ficha"></ul>
 
   <p class="cierre">Estas son algunas ideas. Pueden agregar, modificar o quitar campos según lo que consideren necesario para que la información sea útil para la comunidad.</p>
 </main>
@@ -254,7 +257,7 @@
     otros: '<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>'
   };
 
-  // Doce campos, en cuatro grupos de tres
+  // Doce campos sugeridos
   var CAMPOS = [
     { icono: "nombre",        frente: "Nombre del espacio",      dorso: "¿Cómo se llama?" },
     { icono: "tipo",          frente: "Tipo de espacio",         dorso: "¿Qué clase de espacio o servicio es?" },
@@ -263,7 +266,7 @@
     { icono: "servicios",     frente: "Servicios / actividades", dorso: "¿Qué ofrece?" },
     { icono: "destinatarios", frente: "Destinatarios",           dorso: "¿Quiénes pueden acceder o participar?" },
     { icono: "horarios",      frente: "Horarios",                dorso: "¿Cuándo funciona?" },
-    { icono: "acceso",        frente: "Acceso",                  dorso: "¿Se necesita turno, inscripción, derivación u otro requisito? ¿Cómo se realiza?" },
+    { icono: "acceso",        frente: "Acceso",                  dorso: "¿Precisa turno, inscripción, derivación u otro? ¿Cómo se realiza?" },
     { icono: "costo",         frente: "Costo",                   dorso: "¿Es gratuito? Si no lo es, ¿qué necesitamos saber?" },
     { icono: "contacto",      frente: "Contacto",                dorso: "¿Cómo podemos comunicarnos?" },
     { icono: "fuente",        frente: "Fuente",                  dorso: "¿Dónde obtuvimos estos datos?" },
@@ -281,20 +284,16 @@
           '<span class="categoria">' + c.frente + "</span>" +
         "</span>" +
         '<span class="cara dorso" aria-hidden="true">' +
-          '<span class="categoria-chica">' + c.frente + "</span>" +
-          '<span class="pregunta">' + c.dorso + "</span>" +
+          '<span class="contenido">' +
+            '<span class="categoria-chica">' + c.frente + "</span>" +
+            '<span class="pregunta">' + c.dorso + "</span>" +
+          "</span>" +
         "</span>" +
       "</span>" +
     "</button></li>";
   }
 
-  var html = "";
-  for (var g = 0; g < CAMPOS.length; g += 3) {
-    html += '<ul class="grupo" role="listitem">' +
-      CAMPOS.slice(g, g + 3).map(function (c, k) { return tarjetaHTML(c, g + k); }).join("") +
-      "</ul>";
-  }
-  grilla.innerHTML = html;
+  grilla.innerHTML = CAMPOS.map(tarjetaHTML).join("");
 
   var tarjetas = Array.prototype.slice.call(grilla.querySelectorAll(".tarjeta"));
 
@@ -322,6 +321,33 @@
     tarjetas.forEach(function (t) { girar(t, mostrar); });
     actualizarBotonTodas();
   });
+
+  // Ajuste automático: si en una pantalla angosta (o con otra tipografía)
+  // la pregunta no entra en el dorso, se achica la letra hasta que entre.
+  var MAX = 14.5, MIN = 11;
+  function ajustarDorsos() {
+    grilla.querySelectorAll(".dorso").forEach(function (d) {
+      var cont = d.querySelector(".contenido");
+      var preg = d.querySelector(".pregunta");
+      var size = MAX;
+      preg.style.fontSize = size + "px";
+      var disponible = d.clientHeight - 16;
+      while (cont.offsetHeight > disponible && size > MIN) {
+        size -= 0.5;
+        preg.style.fontSize = size + "px";
+      }
+    });
+  }
+  var pendiente = false;
+  function programarAjuste() {
+    if (pendiente) return;
+    pendiente = true;
+    requestAnimationFrame(function () { pendiente = false; ajustarDorsos(); });
+  }
+  ajustarDorsos();
+  if (window.ResizeObserver) new ResizeObserver(programarAjuste).observe(grilla);
+  else window.addEventListener("resize", programarAjuste);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(ajustarDorsos);
 })();
 </script>
 </body>
