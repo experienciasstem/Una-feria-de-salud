@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>De 1 g a 100 g de producto</title>
+<style>
+  :root {
+    --azul: #035C80;       /* acento principal */
+    --amarillo: #FFCD02;
+    --marino: #1D3343;     /* texto */
+    --turquesa: #8DE2D6;
+    --azul-suave: #EEF4F7;
+    --borde: #D5E1E7;
+    --tenue: #4A5866;
+    --fondo: #F7F9FA;
+    --blanco: #FFFFFF;
+    --alto: 320px;         /* alto total fijo del recurso */
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--fondo);
+    color: var(--marino);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.35;
+    -webkit-text-size-adjust: 100%;
+    overflow: hidden;      /* alto fijo: sin barras de desplazamiento */
+  }
+  button, input { font: inherit; color: inherit; }
+
+  .app {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 800px;
+    height: min(var(--alto), 100vh);
+    margin: 0 auto;
+    padding: 10px 16px;
+  }
+
+  /* ---------- Datos ---------- */
+  .datos {
+    flex: 0 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 8px 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--borde);
+  }
+  .campo label {
+    display: block;
+    margin-bottom: 3px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--tenue);
+  }
+  .entrada { display: flex; align-items: center; gap: 7px; }
+  .entrada input {
+    width: 96px;
+    min-height: 44px;
+    padding: 4px 12px;
+    border: 1.5px solid #9AA8B2;
+    border-radius: 10px;
+    background: var(--blanco);
+    font-size: 21px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .entrada input:focus { outline: 3px solid var(--turquesa); outline-offset: 1px; border-color: var(--azul); }
+  .entrada span { font-size: 19px; font-weight: 600; color: var(--tenue); }
+
+  .btn {
+    min-height: 44px;
+    padding: 8px 20px;
+    border-radius: 10px;
+    border: 2px solid var(--azul);
+    background: var(--azul);
+    color: var(--blanco);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn:hover { background: var(--marino); border-color: var(--marino); }
+  .btn:focus-visible { outline: 3px solid var(--marino); outline-offset: 2px; }
+  .btn[hidden] { display: none; }
+  .btn-otros { background: var(--amarillo); border-color: var(--amarillo); color: var(--marino); }
+  .btn-otros:hover { background: #F0BF00; border-color: #F0BF00; color: var(--marino); }
+
+  /* ---------- Pasos ---------- */
+  .pasos {
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-content: start;
+    overflow-y: auto;   /* solo actúa en pantallas muy angostas */
+  }
+  .paso { padding: 0 14px; border-left: 1px solid var(--borde); min-width: 0; }
+  .paso:first-child { padding-left: 0; border-left: 0; }
+  .paso:last-child { padding-right: 0; }
+
+  .paso h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 8px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .num {
+    flex: 0 0 auto;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--turquesa);
+    display: grid;
+    place-items: center;
+    font-size: 14px;
+    font-weight: 800;
+  }
+  .paso.actual .num { background: var(--amarillo); }
+  .paso:not(.visible) h2 { opacity: 0.4; }
+  .paso .cuerpo { visibility: hidden; opacity: 0; transition: opacity 0.3s ease; }
+  .paso.visible .cuerpo { visibility: visible; opacity: 1; }
+
+  .relacion { display: flex; align-items: flex-start; gap: 10px; overflow: hidden; }
+  .valor strong {
+    display: block;
+    font-size: var(--num-tam, 30px);
+    font-weight: 800;
+    line-height: 1.05;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .valor span {
+    display: block;
+    font-size: max(12px, calc(var(--num-tam, 30px) * 0.45));
+    color: var(--tenue);
+    white-space: nowrap;
+  }
+  .flecha {
+    flex: 0 0 auto;
+    width: 30px; height: 20px;
+    margin-top: calc(var(--num-tam, 30px) * 0.28);
+    color: var(--azul);
+  }
+  .flecha svg { width: 100%; height: 100%; display: block; }
+
+  .calculo {
+    margin: 8px 0 0;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: var(--azul-suave);
+    font-size: 20px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+  }
+
+  /* ---------- Barra inferior: indicador o resultado + botón ---------- */
+  .pie {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 56px;
+    padding-top: 8px;
+    border-top: 1px solid var(--borde);
+  }
+  .estado { flex: 1 1 auto; margin: 0; font-size: 15px; font-weight: 700; color: var(--tenue); }
+  .estado.resultado {
+    padding: 8px 14px;
+    border-left: 6px solid var(--amarillo);
+    background: var(--blanco);
+    border-radius: 0 10px 10px 0;
+    font-size: clamp(18px, 2.6vw, 22px);
+    color: var(--marino);
+  }
+
+  .sr-only {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .paso .cuerpo { transition: none; }
+  }
+
+  /* Pantallas angostas: se muestra solo el paso actual */
+  @media (max-width: 600px) {
+    .app { padding: 8px 10px; gap: 8px; }
+    .entrada input { width: 84px; font-size: 19px; }
+    .btn { padding: 6px 14px; font-size: 15px; }
+    .pasos { grid-template-columns: minmax(0, 1fr); }
+    .paso, .paso:first-child { padding: 0; border-left: 0; }
+    .paso:not(.actual) { display: none; }
+    .estado.resultado { font-size: 17px; }
+  }
+</style>
+</head>
+<body>
+<main class="app">
+  <h1 class="sr-only">De la cantidad original a 1 g y a 100 g de producto</h1>
+
+  <div class="datos" role="group" aria-label="Datos">
+    <div class="campo">
+      <label for="producto">Cantidad de producto</label>
+      <div class="entrada">
+        <input id="producto" type="text" inputmode="decimal" value="30" autocomplete="off">
+        <span aria-hidden="true">g</span>
+      </div>
+    </div>
+    <div class="campo">
+      <label for="componente">Cantidad de componente</label>
+      <div class="entrada">
+        <input id="componente" type="text" inputmode="decimal" value="6" autocomplete="off">
+        <span aria-hidden="true">g</span>
+      </div>
+    </div>
+    <button type="button" class="btn" id="calcular">Ver cómo se calcula</button>
+    <button type="button" class="btn btn-otros" id="otros" hidden>Probar otros valores</button>
+  </div>
+
+  <ol class="pasos" aria-live="polite">
+    <li class="paso" id="paso1">
+      <h2><span class="num" aria-hidden="true">1</span>Datos iniciales</h2>
+      <div class="cuerpo"><div class="relacion" id="rel1"></div></div>
+    </li>
+    <li class="paso" id="paso2">
+      <h2><span class="num" aria-hidden="true">2</span>Pasamos a 1 g de producto</h2>
+      <div class="cuerpo">
+        <div class="relacion" id="rel2"></div>
+        <p class="calculo" id="calc2"></p>
+      </div>
+    </li>
+    <li class="paso" id="paso3">
+      <h2><span class="num" aria-hidden="true">3</span>Pasamos a 100 g de producto</h2>
+      <div class="cuerpo">
+        <div class="relacion" id="rel3"></div>
+        <p class="calculo" id="calc3"></p>
+      </div>
+    </li>
+  </ol>
+
+  <div class="pie">
+    <p class="estado" id="estado" aria-live="polite"></p>
+    <button type="button" class="btn" id="siguiente" hidden>Siguiente paso</button>
+  </div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var inProducto = document.getElementById("producto");
+  var inComponente = document.getElementById("componente");
+  var pasos = [document.getElementById("paso1"), document.getElementById("paso2"), document.getElementById("paso3")];
+  var estado = document.getElementById("estado");
+  var btnSig = document.getElementById("siguiente");
+  var btnCalc = document.getElementById("calcular");
+  var btnOtros = document.getElementById("otros");
+
+  // 0 = antes de calcular · 1, 2, 3 = pasos · 4 = resultado
+  var etapa = 0;
+  var textoResultado = "";
+
+  var FLECHA = '<span class="flecha" aria-hidden="true"><svg viewBox="0 0 34 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10h28M22 3l8 7-8 7"/></svg></span>';
+
+  // Acepta coma o punto decimal ("2,5" o "2.5")
+  function leer(texto) {
+    var t = String(texto).trim().replace(/\s/g, "");
+    if (t.indexOf(",") !== -1) t = t.replace(/\./g, "").replace(",", ".");
+    if (!/^\d*\.?\d+$/.test(t)) return NaN;
+    return parseFloat(t);
+  }
+  // Máximo dos decimales, coma decimal y punto para los miles
+  function fmt(n) {
+    var r = Math.round(n * 100) / 100;
+    var partes = r.toFixed(2).split(".");
+    var entera = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    var dec = partes[1].replace(/0+$/, "");
+    return dec ? entera + "," + dec : entera;
+  }
+  function esRedondeado(n) { return Math.abs(Math.round(n * 100) / 100 - n) > 1e-9; }
+  // Si con dos decimales el valor por gramo daría 0, se muestran las cifras necesarias
+  function fmtChico(n) {
+    if (n > 0 && Math.round(n * 100) === 0) {
+      var dec = Math.min(6, Math.ceil(-Math.log10(n)) + 1);
+      var r = Number(n.toFixed(dec));
+      return { texto: r.toFixed(dec).replace(/0+$/, "").replace(".", ","), aprox: Math.abs(r - n) > 1e-12 };
+    }
+    return { texto: fmt(n), aprox: esRedondeado(n) };
+  }
+
+  function relacion(prod, comp) {
+    return '<div class="valor"><strong>' + prod + ' g</strong><span>de producto</span></div>' + FLECHA +
+      '<div class="valor"><strong>' + comp + ' g</strong><span>de componente</span></div>';
+  }
+
+  function mostrar() {
+    btnOtros.hidden = true;
+    pasos.forEach(function (p, i) {
+      p.classList.toggle("visible", etapa >= i + 1);
+      p.classList.toggle("actual", etapa === i + 1 || (etapa === 4 && i === 2));
+    });
+    if (etapa === 0) {
+      estado.className = "estado";
+      estado.textContent = "";
+      btnSig.hidden = true;
+    } else if (etapa <= 3) {
+      estado.className = "estado";
+      estado.textContent = "Paso " + etapa + " de 3";
+      btnSig.hidden = false;
+      btnSig.textContent = etapa === 3 ? "Ver resultado" : "Siguiente paso";
+    } else {
+      btnOtros.hidden = false;
+      estado.className = "estado resultado";
+      estado.textContent = textoResultado;
+      var teniaFoco = document.activeElement === btnSig;
+      btnSig.hidden = true;
+      if (teniaFoco) btnOtros.focus();
+    }
+  }
+
+  // Si un número largo no entra en su columna, se achica (igual en los tres pasos)
+  function ajustarNumeros() {
+    var rels = Array.prototype.slice.call(document.querySelectorAll(".relacion"));
+    var raiz = document.documentElement;
+    raiz.style.removeProperty("--num-tam");
+    var tam = 30;
+    function desborda() {
+      return rels.some(function (r) { return r.offsetParent !== null && r.scrollWidth > r.clientWidth; });
+    }
+    while (desborda() && tam > 16) {
+      tam -= 1;
+      raiz.style.setProperty("--num-tam", tam + "px");
+    }
+  }
+
+  function calcular() {
+    var p = leer(inProducto.value);
+    var c = leer(inComponente.value);
+    if (!(p > 0) || !(c > 0)) {
+      etapa = 0;
+      mostrar();
+      estado.textContent = "Ingresá en los dos campos un número mayor que 0.";
+      (!(p > 0) ? inProducto : inComponente).focus();
+      return;
+    }
+    var porGramo = c / p;
+    var en100 = porGramo * 100;
+    var g1 = fmtChico(porGramo);
+    var aprox100 = esRedondeado(en100);
+
+    document.getElementById("rel1").innerHTML = relacion(fmt(p), fmt(c));
+    document.getElementById("rel2").innerHTML = relacion("1", g1.texto);
+    document.getElementById("rel3").innerHTML = relacion("100", fmt(en100));
+    document.getElementById("calc2").textContent = fmt(c) + " ÷ " + fmt(p) + (g1.aprox ? " ≈ " : " = ") + g1.texto;
+    document.getElementById("calc3").textContent = g1.texto + (g1.aprox ? "…" : "") + " × 100" + (aprox100 ? " ≈ " : " = ") + fmt(en100);
+    textoResultado = "En 100 g de producto hay " + fmt(en100) + " g del componente.";
+
+    etapa = 1;
+    mostrar();
+    ajustarNumeros();
+    btnSig.focus();
+  }
+
+  btnCalc.addEventListener("click", calcular);
+  [inProducto, inComponente].forEach(function (inp) {
+    inp.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); calcular(); }
+    });
+    // Si se cambian los valores, el procedimiento anterior se oculta
+    inp.addEventListener("input", function () {
+      if (etapa !== 0) { etapa = 0; mostrar(); }
+      else estado.textContent = "";
+    });
+  });
+
+  btnSig.addEventListener("click", function () {
+    if (etapa > 0 && etapa < 4) { etapa++; mostrar(); ajustarNumeros(); }
+  });
+
+  btnOtros.addEventListener("click", function () {
+    inProducto.value = "";
+    inComponente.value = "";
+    etapa = 0;
+    mostrar();
+    inProducto.focus();
+  });
+
+  window.addEventListener("resize", ajustarNumeros);
+  mostrar();
+})();
+</script>
+</body>
+</html>
