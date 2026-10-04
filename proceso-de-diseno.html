@@ -15,7 +15,7 @@
     --tenue: #4A5866;
     --fondo: #F7F9FA;
     --blanco: #FFFFFF;
-    --alto: 420px;         /* alto total fijo del recurso */
+    --alto: 480px;         /* alto total fijo del recurso */
   }
   * { box-sizing: border-box; }
   html, body {
@@ -33,11 +33,11 @@
   .app {
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    max-width: 980px;
+    gap: 16px;
+    max-width: 1180px;
     height: min(var(--alto), 100vh);
     margin: 0 auto;
-    padding: 30px 16px 14px;
+    padding: 42px 20px 14px;
   }
 
   h1 {
@@ -58,7 +58,7 @@
 
   /* ---------- Etapas ---------- */
   .etapas {
-    flex: 1 1 auto;
+    flex: 0 1 auto;
     min-height: 0;
     margin: 0;
     padding: 2px;
@@ -137,6 +137,37 @@
   .etapa.actual .icono { background: var(--amarillo); color: var(--marino); }
   .etapa.actual .bajada { color: var(--blanco); }
 
+  /* ---------- Ejemplo de la etapa actual ---------- */
+  .ejemplo {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    margin: 0;
+    padding: 12px 20px;
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-left: 6px solid var(--turquesa);
+    border-radius: 0 14px 14px 0;
+    overflow-y: auto;
+  }
+  .ejemplo .rotulo {
+    margin: 0;
+    font-size: 12.5px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--azul);
+  }
+  .ejemplo .texto {
+    margin: 0;
+    font-size: clamp(16px, 1.9vw, 19px);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
   /* ---------- Barra inferior ---------- */
   .pie {
     flex: 0 0 auto;
@@ -169,6 +200,11 @@
     .etapa, .bajada { transition: none; }
   }
 
+  /* En anchos menores las tarjetas son más altas: menos aire arriba */
+  @media (max-width: 900px) {
+    .app { padding-top: 24px; }
+  }
+
   /* Pantallas más angostas */
   @media (max-width: 720px) {
     .etapas { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
@@ -187,6 +223,11 @@
   <h1>Proceso de diseño</h1>
 
   <ol class="etapas" id="etapas" aria-label="Etapas del proceso de diseño"></ol>
+
+  <section class="ejemplo" aria-live="polite" aria-labelledby="rotulo">
+    <p class="rotulo" id="rotulo"></p>
+    <p class="texto" id="ejemplo"></p>
+  </section>
 
   <div class="pie">
     <p class="indicador" id="indicador" aria-live="polite"></p>
@@ -208,12 +249,18 @@
   };
 
   var ETAPAS = [
-    { icono: "necesidad",  palabra: "Necesidad",             bajada: "¿Qué problema queremos resolver?" },
-    { icono: "usuarios",   palabra: "Usuarios",              bajada: "¿Quiénes van a usarlo?" },
-    { icono: "decisiones", palabra: "Decisiones de diseño",  bajada: "¿Cómo conviene resolverlo?" },
-    { icono: "version",    palabra: "Primera versión",       bajada: "Construimos una propuesta." },
-    { icono: "prueba",     palabra: "Prueba",                bajada: "Vemos cómo funciona con otras personas." },
-    { icono: "mejora",     palabra: "Mejora",                bajada: "Ajustamos a partir de lo observado." }
+    { icono: "necesidad",  palabra: "Necesidad",             bajada: "¿Qué problema queremos resolver?",
+      ejemplo: "Muchas personas del barrio no saben qué servicios de salud tienen cerca ni cómo acceder a ellos." },
+    { icono: "usuarios",   palabra: "Usuarios",              bajada: "¿Quiénes van a usarlo?",
+      ejemplo: "Vecinas y vecinos, estudiantes del CENS y sus familias. ¿Qué datos buscan? ¿Dónde y cómo lo van a consultar?" },
+    { icono: "decisiones", palabra: "Decisiones de diseño",  bajada: "¿Cómo conviene resolverlo?",
+      ejemplo: "¿Mapa impreso, digital o ambos? ¿Qué datos incluimos de cada espacio? ¿Cómo lo hacemos fácil de leer?" },
+    { icono: "version",    palabra: "Primera versión",       bajada: "Construimos una propuesta.",
+      ejemplo: "Armamos un primer mapa o guía con los espacios que relevamos y la información que verificamos." },
+    { icono: "prueba",     palabra: "Prueba",                bajada: "Vemos cómo funciona con otras personas.",
+      ejemplo: "Se lo mostramos a otras personas y observamos si encuentran lo que buscan y si entienden la información." },
+    { icono: "mejora",     palabra: "Mejora",                bajada: "Ajustamos a partir de lo observado.",
+      ejemplo: "Corregimos datos, cambiamos lo que no se entendió y volvemos a probar antes de la feria." }
   ];
 
   var lista = document.getElementById("etapas");
@@ -242,6 +289,8 @@
       b.setAttribute("aria-label", ETAPAS[i].palabra + (vista ? ": " + ETAPAS[i].bajada : ""));
     });
     indicador.textContent = (actual + 1) + " de " + ETAPAS.length;
+    document.getElementById("rotulo").textContent = "Por ejemplo, en el mapa de salud del barrio · " + ETAPAS[actual].palabra;
+    document.getElementById("ejemplo").textContent = ETAPAS[actual].ejemplo;
 
     var fin = maxVista === ETAPAS.length - 1 && actual === ETAPAS.length - 1;
     btn.textContent = fin ? "Ver de nuevo" : "Siguiente";
